@@ -15,7 +15,7 @@ const HeroBanner = ({ movie }: Props) => {
     <div className="relative w-full h-[70vh] mb-8">
       <Image
         src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-        alt={movie.title}
+        alt={movie.title || movie.name || "영화 배너"}
         fill
         sizes="100vw"
         priority
@@ -35,13 +35,13 @@ const HeroBanner = ({ movie }: Props) => {
         </p>
         <div className="flex gap-3">
           <button
-            onClick={() => openModal(movie.id)}
+            onClick={() => openModal(movie.id, "movie")}
             className="px-6 py-2 bg-white text-black font-bold rounded-md hover:bg-zinc-200 transition flex items-center gap-2"
           >
             ▶ 재생
           </button>
           <button
-            onClick={() => openModal(movie.id)}
+            onClick={() => openModal(movie.id, "movie")}
             className="px-6 py-2 bg-zinc-600/80 text-white font-bold rounded-md hover:bg-zinc-600 transition flex items-center gap-2"
           >
             ℹ 상세정보
