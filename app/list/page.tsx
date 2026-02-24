@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   getPopularMovies,
   getTopRatedMovies,
@@ -22,15 +23,38 @@ const CATEGORY_TABS = [
 ];
 
 export default function MovieList() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const activeTab = searchParams.get("tab") || "popular";
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const selectedGenre = searchParams.get("genre")
+    ? Number(searchParams.get("genre"))
+    : null;
+
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [activeTab, setActiveTab] = useState("popular");
   const [genres, setGenres] = useState<Genre[]>([]);
-  const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
 
-  // 장르 목록 불러오기
+  const updateParams = (params: {
+    tab?: string;
+    page?: number;
+    genre?: number | null;
+  }) => {
+    const next = new URLSearchParams(searchParams.toString());
+
+    if (params.tab !== undefined) next.set("tab", params.tab);
+    if (params.page !== undefined) next.set("page", String(params.page));
+    if (params.genre !== undefined) {
+      if (params.genre === null) next.delete("genre");
+      else next.set("genre", String(params.genre));
+    }
+
+    router.push(`?${next.toString()}`);
+  };
+
+  // 장르 목록
   useEffect(() => {
     getGenreList().then((res) => setGenres(res.data.genres));
   }, []);
@@ -73,18 +97,18 @@ export default function MovieList() {
   }, [activeTab, selectedGenre, currentPage]);
 
   const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-    setSelectedGenre(null);
-    setCurrentPage(1);
+    updateParams({ tab, page: 1, genre: null });
   };
 
   const handleGenreChange = (genreId: number) => {
-    setSelectedGenre(selectedGenre === genreId ? null : genreId);
-    setCurrentPage(1);
+    updateParams({
+      genre: selectedGenre === genreId ? null : genreId,
+      page: 1,
+    });
   };
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    updateParams({ page });
     window.scrollTo(0, 0);
   };
 
