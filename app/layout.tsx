@@ -3,6 +3,8 @@ import "./globals.css";
 import QueryProvider from "@/context/QueryProvider";
 import MovieModal from "@/components/Modal/MovieModal";
 import Navbar from "@/components/Navbar/Navbar";
+import Footer from "@/components/layouts/footer";
+import SmoothScroll from "@/components/SmoothScroll/SmoothScroll";
 
 export const metadata: Metadata = {
   title: "MOVIEFLIX",
@@ -21,6 +23,8 @@ export default function RootLayout({
           <Navbar />
           {children}
           <MovieModal />
+          <Footer />
+          <SmoothScroll />
         </QueryProvider>
       </body>
     </html>

@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useSearch, SearchResult } from "@/hooks/useSearch";
 import MovieCard from "@/components/MovieCard/MovieCard";
 import { MovieGridSkeleton } from "@/components/Skeleton/Skeleton";
+import { Suspense } from "react";
 
 function SearchCard({ item }: { item: SearchResult }) {
   return (
@@ -30,6 +31,7 @@ export default function SearchPage() {
     const value = e.target.value;
     if (value.trim()) {
       router.replace(`/search?q=${encodeURIComponent(value)}`);
+      console.log("검색어:", value);
     } else {
       router.replace("/search");
     }
@@ -86,5 +88,19 @@ export default function SearchPage() {
         </>
       )}
     </main>
+  );
+}
+
+export function Page() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-red-600" />
+        </div>
+      }
+    >
+      <SearchPage />
+    </Suspense>
   );
 }

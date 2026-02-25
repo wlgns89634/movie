@@ -81,40 +81,36 @@ export default function Home() {
       {popular[0] && <HeroBanner movie={popular[0]} />}
 
       {/* 영화 */}
-      <MovieRow title="🔥 인기 영화" movies={popular} category="popular" />
+      <MovieRow title="인기 영화" movies={popular} category="popular" />
+      <MovieRow title="평점 높은 영화" movies={topRated} category="top_rated" />
       <MovieRow
-        title="⭐ 평점 높은 영화"
-        movies={topRated}
-        category="top_rated"
-      />
-      <MovieRow
-        title="🎬 현재 상영중"
+        title="현재 상영중"
         movies={nowPlaying}
         category="now_playing"
       />
-      <MovieRow title="🗓 개봉 예정" movies={upcoming} category="upcoming" />
+      <MovieRow title="개봉 예정" movies={upcoming} category="upcoming" />
 
       {/* TV 시리즈 */}
       <MovieRow
-        title="📺 인기 TV 시리즈"
+        title="인기 TV 시리즈"
         movies={popularTV}
         category="popular"
         type="tv"
       />
       <MovieRow
-        title="⭐ 평점 높은 TV 시리즈"
+        title="평점 높은 TV 시리즈"
         movies={topRatedTV}
         category="top_rated"
         type="tv"
       />
       <MovieRow
-        title="🟢 현재 방영중"
+        title="현재 방영중"
         movies={onAirTV}
         category="now_playing"
         type="tv"
       />
       <MovieRow
-        title="📅 오늘 방영"
+        title="오늘 방영"
         movies={airingTodayTV}
         category="upcoming"
         type="tv"

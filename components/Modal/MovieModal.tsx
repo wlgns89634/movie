@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useMovieStore } from "@/store/movieStore";
+import { useLenisStore } from "@/store/lenisStore";
 import {
   getMovieDetail,
   getMovieCredits,
@@ -21,6 +22,7 @@ import MovieGrid from "@/components/MovieGrid/MovieGrid";
 export default function MovieModal() {
   const { isModalOpen, selectedMovieId, selectedType, closeModal } =
     useMovieStore();
+  const { lenis } = useLenisStore();
   const [detail, setDetail] = useState<MovieDetail | null>(null);
   const [cast, setCast] = useState<Cast[]>([]);
   const [trailer, setTrailer] = useState<Video | null>(null);
@@ -61,7 +63,6 @@ export default function MovieModal() {
           null;
         setTrailer(found);
 
-        // TV면 첫 시즌 바로 로드
         if (isTV) {
           const seasonRes = await getTVSeasonDetail(id, 1);
           setSeasonDetail(seasonRes.data);
@@ -106,12 +107,21 @@ export default function MovieModal() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [closeModal]);
 
+  // Lenis stop/start
   useEffect(() => {
-    document.body.style.overflow = isModalOpen ? "hidden" : "unset";
+    if (isModalOpen) {
+      lenis?.stop();
+      document.body.style.overflow = "hidden";
+    } else {
+      lenis?.start();
+      document.body.style.overflow = "unset";
+    }
+
     return () => {
+      lenis?.start();
       document.body.style.overflow = "unset";
     };
-  }, [isModalOpen]);
+  }, [isModalOpen, lenis]);
 
   if (!isModalOpen) return null;
 
@@ -129,6 +139,7 @@ export default function MovieModal() {
     <div
       className="fixed inset-0 bg-black/70 z-50 flex justify-center items-start overflow-y-auto py-10"
       onClick={closeModal}
+      onWheel={(e) => e.stopPropagation()}
     >
       <div
         className="relative bg-zinc-900 rounded-2xl w-full max-w-3xl mx-4"
@@ -198,8 +209,6 @@ export default function MovieModal() {
                   <h2 className="text-lg font-bold text-white mb-3">
                     📺 에피소드
                   </h2>
-
-                  {/* 시즌 탭 */}
                   <div className="flex gap-2 flex-wrap mb-4">
                     {seasons.map((s) => (
                       <button
@@ -216,7 +225,6 @@ export default function MovieModal() {
                     ))}
                   </div>
 
-                  {/* 에피소드 목록 */}
                   {isSeasonLoading ? (
                     <div className="flex justify-center py-6">
                       <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-600" />
@@ -228,7 +236,6 @@ export default function MovieModal() {
                           key={ep.id}
                           className="flex gap-3 bg-zinc-800 rounded-xl p-2.5 hover:bg-zinc-700 transition"
                         >
-                          {/* 썸네일 */}
                           <div className="relative w-28 shrink-0 aspect-video rounded-lg overflow-hidden bg-zinc-700">
                             {ep.still_path ? (
                               <Image
@@ -244,8 +251,6 @@ export default function MovieModal() {
                               </div>
                             )}
                           </div>
-
-                          {/* 에피소드 정보 */}
                           <div className="flex flex-col justify-center gap-1 flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <span className="text-zinc-500 text-xs shrink-0">

@@ -22,8 +22,7 @@ export function useSearch(query: string) {
       try {
         setIsLoading(true);
         const res = await searchMulti(query);
-        console.log("검색 응답:", res.data);
-        console.log("결과:", res.data.results);
+
         // person 제외, 영화 + TV만
         const filtered = res.data.results.filter(
           (item: SearchResult) =>
