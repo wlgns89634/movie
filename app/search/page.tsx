@@ -21,7 +21,7 @@ function SearchCard({ item }: { item: SearchResult }) {
   );
 }
 
-export default function SearchPage() {
+function SearchContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
@@ -31,7 +31,6 @@ export default function SearchPage() {
     const value = e.target.value;
     if (value.trim()) {
       router.replace(`/search?q=${encodeURIComponent(value)}`);
-      console.log("검색어:", value);
     } else {
       router.replace("/search");
     }
@@ -91,7 +90,7 @@ export default function SearchPage() {
   );
 }
 
-export function Page() {
+export default function SearchPage() {
   return (
     <Suspense
       fallback={
@@ -100,7 +99,7 @@ export function Page() {
         </div>
       }
     >
-      <SearchPage />
+      <SearchContent />
     </Suspense>
   );
 }
