@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   getPopularMovies,
@@ -22,7 +22,7 @@ const CATEGORY_TABS = [
   { key: "upcoming", label: "개봉예정" },
 ];
 
-export default function MovieList() {
+function MovieListContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -54,12 +54,10 @@ export default function MovieList() {
     router.push(`?${next.toString()}`);
   };
 
-  // 장르 목록
   useEffect(() => {
     getGenreList().then((res) => setGenres(res.data.genres));
   }, []);
 
-  // 영화 불러오기
   useEffect(() => {
     const fetchMovies = async () => {
       try {
@@ -114,7 +112,6 @@ export default function MovieList() {
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white p-6">
-      {/* 카테고리 탭 */}
       <div className="flex gap-2 mb-6 flex-wrap">
         {CATEGORY_TABS.map((tab) => (
           <button
@@ -131,7 +128,6 @@ export default function MovieList() {
         ))}
       </div>
 
-      {/* 장르 필터 */}
       <div className="flex gap-2 mb-6 flex-wrap">
         {genres.map((genre) => (
           <button
@@ -164,5 +160,19 @@ export default function MovieList() {
         />
       )}
     </main>
+  );
+}
+
+export default function MovieList() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-red-600" />
+        </div>
+      }
+    >
+      <MovieListContent />
+    </Suspense>
   );
 }
