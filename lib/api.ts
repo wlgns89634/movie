@@ -49,9 +49,13 @@ export const getGenreList = () =>
   });
 
 // 장르별 영화
-export const getMoviesByGenre = (genreId: number, page: number = 1) =>
+export const getMoviesByGenre = (
+  genreId: number,
+  page: number = 1,
+  sortBy: string = "popularity.desc",
+) =>
   tmdb.get("/discover/movie", {
-    params: { with_genres: genreId, language: "ko-KR", page },
+    params: { with_genres: genreId, language: "ko-KR", page, sort_by: sortBy },
   });
 
 // 평점 높은 영화
@@ -73,6 +77,22 @@ export const getUpcomingMovies = (page: number = 1) =>
   });
 
 // =================== TV 시리즈 ===================
+
+// TV 장르 목록
+export const getTVGenreList = () =>
+  tmdb.get("/genre/tv/list", {
+    params: { language: "ko-KR" },
+  });
+
+// 장르별 TV
+export const getTVByGenre = (
+  genreId: number,
+  page: number = 1,
+  sortBy: string = "popularity.desc",
+) =>
+  tmdb.get("/discover/tv", {
+    params: { with_genres: genreId, language: "ko-KR", page, sort_by: sortBy },
+  });
 
 // 인기 TV
 export const getPopularTVShows = (page: number = 1) =>

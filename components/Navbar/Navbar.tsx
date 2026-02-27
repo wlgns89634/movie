@@ -1,15 +1,22 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
-export default function Navbar() {
+const NAV_LINKS = [
+  { href: "/list?type=movie", label: "영화" },
+  { href: "/list?type=tv", label: "TV 시리즈" },
+];
+
+function NavbarContent() {
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -17,7 +24,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // 검색창 열릴 때 자동 포커스
   useEffect(() => {
     if (searchOpen) inputRef.current?.focus();
   }, [searchOpen]);
@@ -37,15 +43,26 @@ export default function Navbar() {
     }
   };
 
+  const isActive = (href: string) => {
+    const [hrefPath, hrefQuery] = href.split("?");
+    if (pathname !== hrefPath) return false;
+    if (!hrefQuery) return true;
+    const hrefParams = new URLSearchParams(hrefQuery);
+    for (const [key, value] of hrefParams.entries()) {
+      if (searchParams.get(key) !== value) return false;
+    }
+    return true;
+  };
+
   return (
     <nav
       className={`sticky top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled
-          ? "bg-zinc-950"
+          ? "bg-zinc-950 shadow-lg"
           : "bg-gradient-to-b from-black/80 to-transparent"
       }`}
     >
-      <div className="flex items-center justify-between px-6 md:px-16 py-4">
+      <div className="flex items-center justify-between px-6 md:px-6 py-4">
         <div className="flex items-center gap-8">
           <Link href="/">
             <span className="text-red-600 font-black text-2xl tracking-tight cursor-pointer">
@@ -53,21 +70,26 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* 검색창 열렸을 때 링크 숨기기 */}
           {!searchOpen && (
-            <div className="hidden md:flex gap-6 text-sm text-zinc-300">
-              <Link href="/list" className="hover:text-white transition">
-                영화
-              </Link>
-              <Link href="/search" className="hover:text-white transition">
-                검색
-              </Link>
+            <div className="hidden md:flex gap-6 text-sm">
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`transition border-b-2 pb-0.5 ${
+                    isActive(link.href)
+                      ? "text-white font-semibold border-red-600"
+                      : "text-zinc-400 border-transparent hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           )}
         </div>
 
         <div className="flex items-center gap-4">
-          {/* 인라인 검색창 */}
           {searchOpen ? (
             <form onSubmit={handleSearch} className="flex items-center gap-2">
               <input
@@ -101,5 +123,13 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
+  );
+}
+
+export default function Navbar() {
+  return (
+    <Suspense fallback={null}>
+      <NavbarContent />
+    </Suspense>
   );
 }
