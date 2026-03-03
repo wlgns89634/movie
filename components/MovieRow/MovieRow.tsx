@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef } from "react";
+
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+
 import { Movie } from "@/dto/data";
 import MovieCard from "@/components/MovieCard/MovieCard";
-import Image from "next/image";
 interface Props {
   title: string;
   movies: Movie[];

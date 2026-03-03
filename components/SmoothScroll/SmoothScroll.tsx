@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
+
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+
 import { useLenisStore } from "@/store/lenisStore";
 
 gsap.registerPlugin(ScrollTrigger);

@@ -1,10 +1,12 @@
 "use client";
 
+import { Suspense } from "react";
+
 import { useRouter, useSearchParams } from "next/navigation";
+
 import { useSearch, SearchResult } from "@/hooks/useSearch";
 import MovieCard from "@/components/MovieCard/MovieCard";
 import { MovieGridSkeleton } from "@/components/Skeleton/Skeleton";
-import { Suspense } from "react";
 
 function SearchCard({ item }: { item: SearchResult }) {
   return (

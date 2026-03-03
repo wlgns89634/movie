@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import { searchMulti } from "@/lib/api";
 import { Movie } from "@/dto/data";
 

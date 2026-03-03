@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
+
 import {
   getMovieDetail,
   getMovieCredits,

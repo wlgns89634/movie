@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import Image from "next/image";
+
 import { useMovieStore } from "@/store/movieStore";
 import { useLenisStore } from "@/store/lenisStore";
 import {
@@ -18,6 +20,13 @@ import {
 import { MovieDetail, Cast, Video, Movie, SeasonDetail } from "@/dto/data";
 import { MovieDetailSkeleton } from "@/components/Skeleton/Skeleton";
 import MovieGrid from "@/components/MovieGrid/MovieGrid";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 export default function MovieModal() {
   const { isModalOpen, selectedMovieId, selectedType, closeModal } =
@@ -128,9 +137,9 @@ export default function MovieModal() {
   const title = detail?.title || detail?.name || "";
   const date = detail?.release_date || detail?.first_air_date || "";
   const runtime = detail?.runtime
-    ? `🕐 ${detail.runtime}분`
+    ? ` ${detail.runtime}분`
     : detail?.episode_run_time?.[0]
-      ? `🕐 회당 ${detail.episode_run_time[0]}분`
+      ? ` 회당 ${detail.episode_run_time[0]}분`
       : null;
 
   const seasons = detail?.seasons?.filter((s) => s.season_number > 0) ?? [];
@@ -142,7 +151,7 @@ export default function MovieModal() {
       onWheel={(e) => e.stopPropagation()}
     >
       <div
-        className="relative bg-zinc-900 rounded-2xl w-full max-w-3xl mx-4"
+        className="relative bg-zinc-900 rounded-2xl w-full max-w-4xl mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -168,7 +177,7 @@ export default function MovieModal() {
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/30 to-transparent" />
-              <div className="absolute bottom-4 left-4">
+              <div className="absolute bottom-4 left-6">
                 <h1 className="text-2xl font-bold text-white">{title}</h1>
                 {isTV && detail.number_of_seasons && (
                   <p className="text-zinc-400 text-sm mt-1">
@@ -179,50 +188,57 @@ export default function MovieModal() {
               </div>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-10">
               {/* 장르 */}
-              <div className="flex gap-3 flex-wrap">
-                {detail.genres.map((g) => (
-                  <span
-                    key={g.id}
-                    className="px-2 py-1 bg-zinc-800 rounded-full text-xs text-white"
-                  >
-                    {g.name}
-                  </span>
-                ))}
-              </div>
+              <div className="flex flex-col gap-5 flex-wrap">
+                <div>
+                  {detail.genres.map((g) => (
+                    <span
+                      key={g.id}
+                      className="px-4 py-2 bg-zinc-800 rounded-full text-xs text-white"
+                    >
+                      {g.name}
+                    </span>
+                  ))}
+                </div>
+                {/* 기본 정보 */}
+                <div className="flex gap-4 text-sm text-zinc-400">
+                  <span>평점 : ⭐{detail.vote_average.toFixed(1)} / 10</span>
+                  {runtime && <span>시간 : {runtime}</span>}
+                  <span>개봉 : {date}</span>
+                </div>
 
-              {/* 기본 정보 */}
-              <div className="flex gap-4 text-sm text-zinc-400">
-                <span>⭐ {detail.vote_average.toFixed(1)}</span>
-                {runtime && <span>{runtime}</span>}
-                <span>📅 {date}</span>
+                <p className="text-zinc-300 text-sm leading-relaxed">
+                  {detail.overview
+                    ? `${detail.overview}`
+                    : "줄거리가 없습니다."}
+                </p>
               </div>
-
-              <p className="text-zinc-300 text-sm leading-relaxed">
-                {detail.overview}
-              </p>
 
               {/* 시즌 & 에피소드 (TV만) */}
               {isTV && seasons.length > 0 && (
                 <section>
-                  <h2 className="text-lg font-bold text-white mb-3">
-                    📺 에피소드
-                  </h2>
-                  <div className="flex gap-2 flex-wrap mb-4">
-                    {seasons.map((s) => (
-                      <button
-                        key={s.season_number}
-                        onClick={() => setSelectedSeason(s.season_number)}
-                        className={`px-3 py-1.5 rounded-full text-xs transition ${
-                          selectedSeason === s.season_number
-                            ? "bg-red-600 text-white"
-                            : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
-                        }`}
-                      >
-                        시즌 {s.season_number}
-                      </button>
-                    ))}
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-bold text-white">에피소드</h2>
+                    <Select
+                      value={String(selectedSeason)}
+                      onValueChange={(val) => setSelectedSeason(Number(val))}
+                    >
+                      <SelectTrigger className="w-26 bg-zinc-800 border-zinc-700 text-white">
+                        <SelectValue placeholder="시즌 선택" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-zinc-800 border-zinc-700 text-white">
+                        {seasons.map((s) => (
+                          <SelectItem
+                            key={s.season_number}
+                            value={String(s.season_number)}
+                            className="text-white focus:bg-zinc-700 focus:text-white"
+                          >
+                            시즌 {s.season_number}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   {isSeasonLoading ? (
@@ -230,13 +246,13 @@ export default function MovieModal() {
                       <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-600" />
                     </div>
                   ) : (
-                    <div className="flex flex-col gap-2 max-h-72 overflow-y-auto pr-1">
+                    <div className="scrollbar flex flex-col gap-2 max-h-72 overflow-y-auto pr-1">
                       {seasonDetail?.episodes.map((ep) => (
                         <div
                           key={ep.id}
-                          className="flex gap-3 bg-zinc-800 rounded-xl p-2.5 hover:bg-zinc-700 transition"
+                          className="flex gap-3 border-b border-zinc-800 py-4 px-2.5 hover:bg-zinc-700 transition"
                         >
-                          <div className="relative w-28 shrink-0 aspect-video rounded-lg overflow-hidden bg-zinc-700">
+                          <div className="relative w-29 shrink-0 aspect-video rounded-sm overflow-hidden ">
                             {ep.still_path ? (
                               <Image
                                 src={`https://image.tmdb.org/t/p/w300${ep.still_path}`}
@@ -253,22 +269,26 @@ export default function MovieModal() {
                           </div>
                           <div className="flex flex-col justify-center gap-1 flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <span className="text-zinc-500 text-xs shrink-0">
+                              <span className="text-zinc-100 text-[14px] shrink-0">
                                 E{ep.episode_number}
                               </span>
-                              <h3 className="text-white text-xs font-semibold truncate">
+                              <h3 className="text-zinc-300 text-[14px] font-semibold truncate">
                                 {ep.name}
                               </h3>
                             </div>
-                            <div className="flex gap-2 text-xs text-zinc-500">
-                              {ep.air_date && <span>📅 {ep.air_date}</span>}
-                              {ep.runtime && <span>🕐 {ep.runtime}분</span>}
+                            <div className="flex gap-2 text-[14px] text-zinc-400">
+                              {ep.air_date && (
+                                <span>방영일 : {ep.air_date}</span>
+                              )}
+                              {ep.runtime && <span> {ep.runtime}분</span>}
                               {ep.vote_average > 0 && (
-                                <span>⭐ {ep.vote_average.toFixed(1)}</span>
+                                <span>
+                                  평점 : ⭐ {ep.vote_average.toFixed(1)}
+                                </span>
                               )}
                             </div>
                             {ep.overview && (
-                              <p className="text-zinc-400 text-xs line-clamp-2">
+                              <p className="text-[14px] line-clamp-2 text-zinc-300">
                                 {ep.overview}
                               </p>
                             )}
@@ -299,13 +319,11 @@ export default function MovieModal() {
               {/* 출연진 */}
               {cast.length > 0 && (
                 <section>
-                  <h2 className="text-lg font-bold text-white mb-3">
-                    🎭 출연진
-                  </h2>
-                  <div className="grid grid-cols-5 gap-3">
+                  <h2 className="text-lg font-bold text-white mb-3">출연진</h2>
+                  <div className="grid grid-cols-5 gap-5">
                     {cast.map((actor) => (
                       <div key={actor.id} className="text-center">
-                        <div className="relative w-full aspect-square rounded-full overflow-hidden bg-zinc-800 mb-1">
+                        <div className="relative w-full aspect-square rounded-md overflow-hidden bg-zinc-800 mb-1">
                           {actor.profile_path ? (
                             <Image
                               src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
@@ -315,15 +333,22 @@ export default function MovieModal() {
                               className="object-cover"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-2xl">
-                              👤
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Image
+                                src={"/images/human.svg"}
+                                alt={"이미지 없음"}
+                                width={100}
+                                height={100}
+                                sizes="100%"
+                                className="w-25"
+                              />
                             </div>
                           )}
                         </div>
-                        <p className="text-xs font-semibold text-white truncate">
+                        <p className="mt-3 text-[14px] font-semibold text-white truncate">
                           {actor.name}
                         </p>
-                        <p className="text-xs text-zinc-400 truncate">
+                        <p className="text-[14px] text-zinc-400 truncate">
                           {actor.character}
                         </p>
                       </div>
@@ -336,7 +361,7 @@ export default function MovieModal() {
               {recommendations.length > 0 && (
                 <section>
                   <h2 className="text-lg font-bold text-white mb-3">
-                    {isTV ? "📺 추천 TV 시리즈" : "🍿 추천 영화"}
+                    {isTV ? "추천 TV 시리즈" : "추천 영화"}
                   </h2>
                   <MovieGrid movies={recommendations} type={selectedType} />
                 </section>

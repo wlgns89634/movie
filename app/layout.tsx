@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+
 import "./globals.css";
 import QueryProvider from "@/context/QueryProvider";
 import MovieModal from "@/components/Modal/MovieModal";

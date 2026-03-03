@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+
 import { Movie } from "@/dto/data";
 import { useMovieStore } from "@/store/movieStore";
 
