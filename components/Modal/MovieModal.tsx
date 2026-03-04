@@ -169,13 +169,26 @@ export default function MovieModal() {
           <>
             {/* 백드롭 */}
             <div className="relative h-64 rounded-t-2xl overflow-hidden">
-              <Image
-                src={`https://image.tmdb.org/t/p/original${detail.backdrop_path}`}
-                alt={title}
-                fill
-                sizes="(max-width: 640px) 100vw"
-                className="object-cover"
-              />
+              {detail.backdrop_path ? (
+                <Image
+                  src={`https://image.tmdb.org/t/p/original${detail.backdrop_path}`}
+                  alt={title}
+                  fill
+                  sizes="(max-width: 640px) 100vw"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
+                  <Image
+                    src={`/images/noimg.svg`}
+                    alt={title}
+                    width={100}
+                    height={100}
+                    sizes="(max-width: 640px) 100vw"
+                    className="object-cover"
+                  />
+                </div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/30 to-transparent" />
               <div className="absolute bottom-4 left-6">
                 <h1 className="text-2xl font-bold text-white">{title}</h1>
@@ -263,7 +276,14 @@ export default function MovieModal() {
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-xl">
-                                🎬
+                                <Image
+                                  src={`/images/noimg.svg`}
+                                  alt={title}
+                                  width={30}
+                                  height={30}
+                                  sizes="100%"
+                                  className="object-cover"
+                                />
                               </div>
                             )}
                           </div>

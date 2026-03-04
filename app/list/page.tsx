@@ -181,24 +181,19 @@ function MovieListContent() {
 
   return (
     <main className="min-h-screen bg-zinc-950 text-white p-6">
-      {/* 영화/TV 타입 표시 */}
-      <div className="flex gap-3 mb-2">
-        <h2 className="text-zinc-500 text-sm font-semibold">
-          {isTV ? "📺 TV 시리즈" : "🎬 영화"}
-        </h2>
-      </div>
-
       {/* 카테고리 탭 */}
-      <div className="flex gap-2 mb-6 flex-wrap">
+      <div className="flex gap-0 mb-6 border-b border-zinc-800">
         {TABS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => handleTabChange(tab.key)}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition ${
-              activeTab === tab.key
-                ? "bg-blue-600 text-white"
-                : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
-            }`}
+            className={`relative px-5 py-2.5 text-sm font-medium transition-colors whitespace-nowrap
+        after:absolute after:bottom-[-1px] after:left-0 after:right-0 after:h-[2px] after:transition-all after:duration-250
+        ${
+          activeTab === tab.key
+            ? "text-white font-bold after:bg-red-600"
+            : "text-zinc-500 hover:text-zinc-300 after:bg-transparent"
+        }`}
           >
             {tab.label}
           </button>
@@ -206,20 +201,25 @@ function MovieListContent() {
       </div>
 
       {/* 장르 필터 */}
-      <div className="flex gap-2 mb-6 flex-wrap">
-        {genres.map((genre) => (
-          <button
-            key={genre.id}
-            onClick={() => handleGenreChange(genre.id)}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition ${
-              selectedGenre === genre.id
-                ? "bg-rose-600 text-white"
-                : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
-            }`}
-          >
-            {genre.name}
-          </button>
-        ))}
+      <div className="relative mb-6">
+        <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1 pr-12">
+          {genres.map((genre) => (
+            <button
+              key={genre.id}
+              onClick={() => handleGenreChange(genre.id)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap border
+          ${
+            selectedGenre === genre.id
+              ? "border-white text-white bg-white/10"
+              : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+          }`}
+            >
+              {genre.name}
+            </button>
+          ))}
+        </div>
+        {/* 오른쪽 페이드 */}
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-r from-transparent to-zinc-950" />
       </div>
 
       <h1 className="text-2xl font-bold mb-6">{getTitle()}</h1>
