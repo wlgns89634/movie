@@ -1,12 +1,14 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 import { useSearch, SearchResult } from "@/hooks/useSearch";
 import MovieCard from "@/components/MovieCard/MovieCard";
 import { MovieGridSkeleton } from "@/components/Skeleton/Skeleton";
+import SearchLoading from "@/components/Loading/SearchLoading";
 
 function SearchCard({ item }: { item: SearchResult }) {
   return (
@@ -27,32 +29,53 @@ function SearchContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
+
+  const [inputValue, setInputValue] = useState(query);
   const { results, isLoading, totalResults } = useSearch(query);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value.trim()) {
-      router.replace(`/search?q=${encodeURIComponent(value)}`);
+  const handleSearch = () => {
+    if (inputValue.trim()) {
+      router.replace(`/search?q=${encodeURIComponent(inputValue)}`);
     } else {
       router.replace("/search");
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") handleSearch();
+  };
+
   return (
     <main className="min-h-screen bg-zinc-950 text-white p-6">
+      {isLoading && <SearchLoading />}
       <div className="max-w-2xl mx-auto mb-10">
-        <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 text-lg">
-            🔍
-          </span>
-          <input
-            type="text"
-            defaultValue={query}
-            onChange={handleChange}
-            placeholder="영화, TV 시리즈 검색..."
-            className="w-full bg-zinc-800 text-white rounded-xl pl-11 pr-4 py-3.5 text-sm placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-red-600 transition"
-            autoFocus
-          />
+        <div className="relative flex gap-2">
+          <div className="relative flex-1">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 text-lg">
+              <Image
+                src="/images/search.svg"
+                alt="검색 아이콘"
+                width={20}
+                height={20}
+                className="object-contain"
+              />
+            </span>
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="영화, TV 시리즈 검색..."
+              className="w-full bg-zinc-800 text-white rounded-xl pl-11 pr-4 py-3.5 text-sm placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-red-600 transition"
+              autoFocus
+            />
+          </div>
+          <button
+            onClick={handleSearch}
+            className="bg-red-600 hover:bg-red-700 text-white text-sm px-5 rounded-xl transition"
+          >
+            검색
+          </button>
         </div>
       </div>
 
@@ -64,9 +87,9 @@ function SearchContent() {
       ) : isLoading ? (
         <MovieGridSkeleton />
       ) : results.length === 0 ? (
-        <div className="text-center text-zinc-500 mt-20">
-          <p className="text-4xl mb-4">😢</p>
-          <p className="text-lg">
+        <div className="flex flex-col items-center justify-center min-h-[70vh] text-center">
+          <p className="text-6xl mb-6">😢</p>
+          <p className="text-2xl">
             <span className="text-white font-semibold">{query}</span> 검색
             결과가 없어요
           </p>

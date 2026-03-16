@@ -202,7 +202,7 @@ function MovieListContent() {
 
       {/* 장르 필터 */}
       <div className="relative mb-6">
-        <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1 pr-12">
+        <div className="scrollbar flex gap-2 overflow-x-auto scrollbar-none pb-1 pr-12">
           {genres.map((genre) => (
             <button
               key={genre.id}

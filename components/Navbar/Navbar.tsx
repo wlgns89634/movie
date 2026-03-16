@@ -21,10 +21,6 @@ function NavbarContent() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (searchOpen) inputRef.current?.focus();
-  }, [searchOpen]);
-
-  useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "unset";
     return () => {
       document.body.style.overflow = "unset";
@@ -177,10 +173,7 @@ function NavbarContent() {
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800">
-          <span className="text-red-600 font-black text-xl tracking-tight">
-            MOVIEFLIX
-          </span>
+        <div className="flex items-center justify-end px-6 py-4 border-b border-zinc-800">
           <button
             onClick={() => setMenuOpen(false)}
             className="text-zinc-400 hover:text-white transition text-lg"
