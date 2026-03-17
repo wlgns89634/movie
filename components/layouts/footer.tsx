@@ -55,7 +55,6 @@ export default function Footer() {
             © 2026 MOVIEFLIX. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
-            <span className="text-blue-400 text-xs font-bold">TMDB</span>
             <p className="text-zinc-600 text-xs">
               This product uses the TMDB API but is not endorsed or certified by
               TMDB.
