@@ -51,7 +51,7 @@ export default function MovieRow({
       <div className="relative group/row">
         <button
           onClick={() => scroll("left")}
-          className="absolute left-0 top-0 bottom-0 z-10 w-12 bg-black/50 backdrop-blur-sm text-white text-[60px] opacity-0 group-hover/row:opacity-100 transition-opacity cursor-pointer flex items-center justify-center hover:bg-black/80"
+          className="absolute left-0 top-0 bottom-0 z-10 w-12 bg-black/50 backdrop-blur-sm text-white text-[60px] opacity-100 md:opacity-0 md:group-hover/row:opacity-100 transition-opacity cursor-pointer flex items-center justify-center hover:bg-black/80"
         >
           <Image
             src="/images/arrow.svg"
@@ -74,7 +74,7 @@ export default function MovieRow({
         </div>
         <button
           onClick={() => scroll("right")}
-          className="absolute right-0 top-0 bottom-0 z-10 w-12 bg-black/50 backdrop-blur-sm text-white text-[60px] opacity-0 group-hover/row:opacity-100 transition-opacity flex items-center justify-center hover:bg-black/80"
+          className="absolute right-0 top-0 bottom-0 z-10 w-12 bg-black/50 backdrop-blur-sm text-white text-[60px] opacity-100 md:opacity-0 md:group-hover/row:opacity-100 transition-opacity flex items-center justify-center hover:bg-black/80"
         >
           <Image src="/images/arrow.svg" alt="더보기" width={12} height={12} />
         </button>

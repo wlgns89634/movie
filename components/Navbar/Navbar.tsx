@@ -85,25 +85,26 @@ function NavbarContent() {
 
           {/* 오른쪽: 검색 아이콘 + 햄버거 */}
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setSearchOpen((prev) => !prev)}
-              className="flex items-center justify-center h-8 transition text-white hover:text-zinc-300"
-            >
-              {searchOpen ? (
-                <span className="text-zinc-400 hover:text-white text-lg font-medium transition">
-                  ✕
-                </span>
-              ) : (
-                <Image
-                  src="/images/search.svg"
-                  alt="검색 아이콘"
-                  width={20}
-                  height={20}
-                  className="object-contain"
-                />
-              )}
-            </button>
-
+            {pathname !== "/search" && (
+              <button
+                onClick={() => setSearchOpen((prev) => !prev)}
+                className="flex items-center justify-center h-8 transition text-white hover:text-zinc-300"
+              >
+                {searchOpen ? (
+                  <span className="text-zinc-400 hover:text-white text-lg font-medium transition">
+                    ✕
+                  </span>
+                ) : (
+                  <Image
+                    src="/images/search.svg"
+                    alt="검색 아이콘"
+                    width={20}
+                    height={20}
+                    className="object-contain"
+                  />
+                )}
+              </button>
+            )}
             <button
               onClick={() => setMenuOpen((prev) => !prev)}
               className="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5"
@@ -129,6 +130,7 @@ function NavbarContent() {
         </div>
 
         {/* 검색바 슬라이드 다운 */}
+
         <div
           className={`overflow-hidden transition-all duration-300 absolute top-full left-0 right-0 bg-zinc-950 bg-transparent ${
             searchOpen ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
@@ -159,7 +161,7 @@ function NavbarContent() {
 
       {/* 오버레이 */}
       <div
-        className={`fixed inset-0 z-30 bg-black/60 transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-40 bg-black/60 transition-opacity duration-300 md:hidden ${
           menuOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
@@ -182,13 +184,13 @@ function NavbarContent() {
           </button>
         </div>
 
-        <nav className="flex flex-col px-4 py-6 gap-2">
+        <nav className="flex flex-col px-4 py-4 gap-2">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMenuOpen(false)}
-              className={`px-4 py-3 rounded-lg text-sm font-medium transition ${
+              className={`p-2 rounded-lg text-sm font-medium transition ${
                 isActive(link.href)
                   ? "bg-red-600/20 text-white border border-red-600/40"
                   : "text-zinc-400 hover:bg-zinc-800 hover:text-white"

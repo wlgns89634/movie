@@ -96,7 +96,7 @@ function SearchContent() {
         </div>
       ) : (
         <>
-          <p className="text-zinc-400 text-sm mb-6">
+          <p className="text-zinc-400 text-sm mb-4 md:mb-6">
             <span className="text-white font-semibold">{`"${query}"`}</span>{" "}
             검색 결과{" "}
             <span className="text-red-500 font-semibold">

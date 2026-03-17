@@ -121,9 +121,11 @@ export default function MovieModal() {
     if (isModalOpen) {
       lenis?.stop();
       document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden"; // 추가
     } else {
       lenis?.start();
       document.body.style.overflow = "unset";
+      document.documentElement.style.overflow = "unset"; // 추가
     }
 
     return () => {
@@ -149,14 +151,16 @@ export default function MovieModal() {
       className="fixed inset-0 bg-black/70 z-50 flex justify-center items-start overflow-y-auto py-10"
       onClick={closeModal}
       onWheel={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
+      style={{ WebkitOverflowScrolling: "touch" }}
     >
       <div
-        className="relative bg-zinc-900 rounded-2xl w-full max-w-4xl mx-4"
+        className="relative bg-zinc-900 rounded-2xl w-[86%] max-w-4xl mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={closeModal}
-          className="absolute top-4 right-4 z-10 bg-zinc-800 rounded-full w-8 h-8 flex items-center justify-center hover:bg-zinc-700 transition"
+          className="absolute top-4 text-white right-4 z-10 bg-zinc-800 rounded-full w-8 h-8 flex items-center justify-center hover:bg-zinc-700 transition"
         >
           ✕
         </button>
@@ -204,7 +208,7 @@ export default function MovieModal() {
             <div className="p-6 space-y-10">
               {/* 장르 */}
               <div className="flex flex-col gap-5 flex-wrap">
-                <div>
+                <div className="flex gap-3 flex-wrap">
                   {detail.genres.map((g) => (
                     <span
                       key={g.id}
@@ -215,7 +219,7 @@ export default function MovieModal() {
                   ))}
                 </div>
                 {/* 기본 정보 */}
-                <div className="flex gap-4 text-sm text-zinc-400">
+                <div className="flex gap-2 text-sm text-zinc-400 flex-col md:flex-row md:gap-4">
                   <span>평점 : ⭐{detail.vote_average.toFixed(1)} / 10</span>
                   {runtime && <span>시간 : {runtime}</span>}
                   <span>개봉 : {date}</span>
@@ -296,7 +300,7 @@ export default function MovieModal() {
                                 {ep.name}
                               </h3>
                             </div>
-                            <div className="flex gap-2 text-[14px] text-zinc-400">
+                            <div className="flex gap-1 mb-2 text-[14px] text-zinc-400 md:flex-row flex-col md:gap-2">
                               {ep.air_date && (
                                 <span>방영일 : {ep.air_date}</span>
                               )}
@@ -340,10 +344,19 @@ export default function MovieModal() {
               {cast.length > 0 && (
                 <section>
                   <h2 className="text-lg font-bold text-white mb-3">출연진</h2>
-                  <div className="grid grid-cols-5 gap-5">
+                  <div
+                    className="scrollbar flex gap-4 overflow-x-auto pb-2"
+                    style={{
+                      msOverflowStyle: "none",
+                      WebkitOverflowScrolling: "touch",
+                    }}
+                  >
                     {cast.map((actor) => (
-                      <div key={actor.id} className="text-center">
-                        <div className="relative w-full aspect-square rounded-md overflow-hidden bg-zinc-800 mb-1">
+                      <div
+                        key={actor.id}
+                        className="text-center shrink-0 w-24 md:w-28"
+                      >
+                        <div className="relative w-full aspect-[3/4] rounded-md overflow-hidden bg-zinc-800 mb-2">
                           {actor.profile_path ? (
                             <Image
                               src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
@@ -383,7 +396,11 @@ export default function MovieModal() {
                   <h2 className="text-lg font-bold text-white mb-3">
                     {isTV ? "추천 TV 시리즈" : "추천 영화"}
                   </h2>
-                  <MovieGrid movies={recommendations} type={selectedType} />
+                  <MovieGrid
+                    movies={recommendations}
+                    type={selectedType}
+                    scroll
+                  />
                 </section>
               )}
             </div>
